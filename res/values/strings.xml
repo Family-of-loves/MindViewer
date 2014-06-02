@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MindViewer</string>
+    <string name="title_section1">Connect</string>
+    <string name="title_section2">Scan Mind</string>
+    <string name="action_settings">BT Settings</string>
+
+</resources>
