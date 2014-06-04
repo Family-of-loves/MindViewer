@@ -30,7 +30,7 @@
             android:gravity="top|center"
             android:orientation="horizontal" >
             
-            <com.example.mindviewer.CircularProgressBar
+            <com.example.mindviewer.Widget.CircularProgressBar
                 android:id="@+id/circle_attention"
                 style="@style/Widget.ProgressBar.Holo.CircularProgressBar"
                 android:layout_width="130dp"
@@ -39,7 +39,7 @@
                 circular:subtitle="subtitle"
                 circular:title="Title" />
 
-            <com.example.mindviewer.CircularProgressBar
+            <com.example.mindviewer.Widget.CircularProgressBar
                 android:id="@+id/circle_meditation"
                 style="@style/Widget.ProgressBar.Holo.CircularProgressBar"
                 android:layout_width="130dp"
@@ -62,14 +62,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" >
             
-             <Button
-            android:id="@+id/test_arduino"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Button" />
-             
-             
         </LinearLayout>
 
        

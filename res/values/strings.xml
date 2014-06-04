@@ -3,8 +3,10 @@
 
     <string name="app_name">MindViewer</string>
     <string name="title_section1">Connect</string>
-    <string name="title_section2">Scan Mind</string>
+    <string name="title_section2">Intelligent</string>
+    <string name="title_section3">Manual</string>
     <string name="action_settings">BT Settings</string>
+    
     
 
 </resources>

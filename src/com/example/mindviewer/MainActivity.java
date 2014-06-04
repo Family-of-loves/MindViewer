@@ -23,6 +23,8 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity implements ActionBar.TabListener {
 
+	int totalPages = 3;
+	static private BlueSmirfSPP      mSPP = new BlueSmirfSPP();
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
 	 * fragments for each of the sections. We use a {@link FragmentPagerAdapter}
@@ -36,8 +38,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 	 */
 	ViewPager mViewPager;
 	
-
-	static private BlueSmirfSPP      mSPP = new BlueSmirfSPP();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +55,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
+		mViewPager.setOffscreenPageLimit(totalPages);
 
 		// When swiping between different sections, select the corresponding
 		// tab. We can also use ActionBar.Tab#select() to do this if we have
@@ -135,15 +136,16 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 				return new ConnActivity(mContext, mSPP);
 			case 1:
 				return new ScanActivity(mContext, mSPP);
+			case 2:
+				return new ManualActivity(mContext, mSPP);	
 			}
 			return null;
-			//return PlaceholderFragment.newInstance(position + 1);
 		}
 
 		@Override
 		public int getCount() {
 			// Show 3 total pages.
-			return 2;
+			return totalPages;
 		}
 
 		@Override
@@ -154,7 +156,8 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 				return getString(R.string.title_section1).toUpperCase(l);
 			case 1:
 				return getString(R.string.title_section2).toUpperCase(l);
-			
+			case 2:
+				return getString(R.string.title_section3).toUpperCase(l);
 			}
 			return null;
 		}

@@ -49,36 +49,28 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 	int btn_mindset_conn_state = 0;
 	
 	/* BlueSmirf */
-	private static final String TAG = "BlueSmirfDemo";
+	static final String TAG = "BlueSmirfDemo";
 
 	// app state
-	static private BlueSmirfSPP      mSPP;
-	private boolean           mIsThreadRunning;
-	private String            mSmirfBluetoothAddress;
-	private ArrayList<String> mArrayListBluetoothAddress;
+	static BlueSmirfSPP      mSPP;
+	boolean           mIsThreadRunning;
+	String            mSmirfBluetoothAddress;
+	ArrayList<String> mArrayListBluetoothAddress;
 
 	// UI
-	private TextView     mTextViewStatus;
-	private Spinner      mSpinnerArduinoDevices;
+	TextView     mTextViewStatus;
+	Spinner      mSpinnerArduinoDevices;
 	@SuppressWarnings("rawtypes")
-	private ArrayAdapter mArrayAdapterDevices;
-	private Handler      mHandler;
-
-	// Arduino state
-	private int mStateLED;
-	private int mStatePOT;
-	
+	ArrayAdapter mArrayAdapterDevices;
+	Handler      mHandler;
 	
 	public ConnActivity(Context context, BlueSmirfSPP mSPP) {
 		mContext = context;
-		
 		mIsThreadRunning           = false;
 		mSmirfBluetoothAddress     = null;
-		this.mSPP                       = mSPP;
-		mStateLED                  = 0;
-		mStatePOT                  = 0;
 		mArrayListBluetoothAddress = new ArrayList<String>();
 		
+		this.mSPP                  = mSPP;
 	}
 	
 	@Override
@@ -87,7 +79,7 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 		
 		mTextViewStatus         = (TextView) view.findViewById(R.id.section2_status);
 		ArrayList<String> items = new ArrayList<String>();
-		mSpinnerArduinoDevices         = (Spinner) view.findViewById(R.id.spinner_arduino);
+		mSpinnerArduinoDevices  = (Spinner) view.findViewById(R.id.spinner_arduino);
 		mArrayAdapterDevices    = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, items);
 		mHandler                = new Handler(this);
 		mSpinnerArduinoDevices.setOnItemSelectedListener(this);
@@ -108,29 +100,25 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 		btn_mindset_conn.setOnClickListener(this);
 		btn_arduino_conn.setOnClickListener(this);
 		
-		
-    	return view;
+		return view;
 	}
 	
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()){
-		case R.id.btn_mindset_conn :
-			if(btn_mindset_conn_state == 0){
-				onConnMindset(v);
-				btn_mindset_conn_state = 1;
-				btn_mindset_conn.setText("Disconnect to Mindset");
-			}
-			else {
-				tgDevice.close();
-				btn_mindset_conn_state = 0;
-				btn_mindset_conn.setText("Connect to Mindset");
-			}
-		break;
-		case R.id.btn_arduino_conn :
-			onConnectLink(v);
-			//Toast.makeText(getActivity(), "준비중입니다.", Toast.LENGTH_SHORT).show();
-		break;
+			case R.id.btn_mindset_conn :
+				if(btn_mindset_conn_state == 0){
+					onConnMindset(v);
+					toggleConn(true);
+				}
+				else {
+					tgDevice.close();
+					toggleConn(false);
+				}
+			break;
+			case R.id.btn_arduino_conn :
+				onConnectLink(v);
+			break;
 			
 		}		
 	}
@@ -150,21 +138,20 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 						break;
 						case TGDevice.STATE_CONNECTED:
 							Toast.makeText(getActivity(), "Mindset과 연결되었습니다.", Toast.LENGTH_SHORT).show();
-							section1_status.setText("Connected");
+							toggleConn(true);
 							tgDevice.start();
 						break;
 						case TGDevice.STATE_DISCONNECTED:
 							Toast.makeText(getActivity(), "Mindset과 연결이 끊겼습니다.", Toast.LENGTH_SHORT).show();
-							btn_mindset_conn_state = 0;
-							section1_status.setText("Disconnected");
+							toggleConn(false);
 						break;
 						case TGDevice.STATE_NOT_FOUND:
 							Toast.makeText(getActivity(), "Mindset을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
-							btn_mindset_conn_state = 0;
+							toggleConn(false);
 						break;
 						case TGDevice.STATE_NOT_PAIRED:
 							Toast.makeText(getActivity(), "Mindset이 페어링 되지 않았습니다.", Toast.LENGTH_SHORT).show();
-							btn_mindset_conn_state = 0;
+							toggleConn(false);
 						break;
 						default:
 						break;
@@ -176,11 +163,13 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 				
 				case TGDevice.MSG_ATTENTION:
 					//bWave.setAtt(msg.arg1);
-					Log.v("HelloEEG", "Attention: " + msg.arg1);
+					bWave.setAtt((int) (Math.random() * 100));
+					//Log.v("HelloEEG", "Attention: " + msg.arg1);
 				break;
 				
 				case TGDevice.MSG_MEDITATION:
 					//bWave.setMed(msg.arg1);
+					bWave.setMed((int) (Math.random() * 100));
 					//Log.v("HelloEEG", "Meditation: " + bWave.getMed());
 				break;
 				
@@ -200,28 +189,29 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 	public void onConnMindset(View v){
 		btAdapter = BluetoothAdapter.getDefaultAdapter();
     	if(btAdapter != null) {
-    		bWave = new Brainwaves();
+    		bWave = Brainwaves.getInstance();
     		tgDevice = new TGDevice(btAdapter, handler);
     		tgDevice.connect(true);
     		tgDevice.start();
     	}
 	}
 	
+	public void toggleConn(boolean isConnected){
+		if(isConnected){
+			btn_mindset_conn_state = 1;
+			btn_mindset_conn.setText("Disconnect to Mindset");
+			section1_status.setText("Connected");
+		}else{
+			btn_mindset_conn_state = 0;
+			btn_mindset_conn.setText("Connect to Mindset");
+			section1_status.setText("Disconnected");
+		}	
+	}
+	
 	/*
 	 * Connection Arduino
 	*/
 	
-	public void onToggleLED(View view){
-		String message = "onLED";
-		
-		if(mSPP.isConnected()){
-			byte[] send = message.getBytes();
-			
-			mSPP.write(send, 0, send.length);
-			mStateLED = 1 - mStateLED;
-		}
-	}
-
 	@Override
 	public void onResume()
 	{
@@ -282,11 +272,8 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 		Looper.prepare();
 		mSPP.connect(mSmirfBluetoothAddress);
 		while(mSPP.isConnected()){
-			mSPP.writeByte(mStateLED);
 			mSPP.flush();
-			mStatePOT = mSPP.readByte();
-			mStatePOT |= mSPP.readByte() << 8;
-
+			
 			if(mSPP.isError()){
 				mSPP.disconnect();
 			}
@@ -298,8 +285,6 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 			catch(InterruptedException e) { Log.e(TAG, e.getMessage());}
 		}
 
-		mStateLED        = 0;
-		mStatePOT        = 0;
 		mIsThreadRunning = false;
 		mHandler.sendEmptyMessage(0);
 	}

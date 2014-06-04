@@ -1,10 +1,12 @@
 package com.example.mindviewer;
 
 import com.example.mindviewer.BlueSmirf.BlueSmirfSPP;
+import com.example.mindviewer.Widget.CircularProgressBar;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,11 +19,15 @@ public class ScanActivity extends Fragment implements OnClickListener {
 	Context mContext;
 
 	Button test_arduino;
-	private BlueSmirfSPP mSPP;
+	BlueSmirfSPP mSPP;
+	Brainwaves bWave;
+	CircularProgressBar cAtt;
+	CircularProgressBar cMed;
 	
 	public ScanActivity(Context context, BlueSmirfSPP mSPP) {
-		mContext = context;
-		this.mSPP = mSPP;
+		mContext 				   	= context;
+		bWave 						= Brainwaves.getInstance();
+		this.mSPP 				   	= mSPP;
 	}
 	
 	@Override
@@ -29,23 +35,16 @@ public class ScanActivity extends Fragment implements OnClickListener {
 			ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.activity_scan, null);
 		
-		test_arduino = (Button) view.findViewById(R.id.test_arduino);
+		PrintThread thread = new PrintThread();
+		thread.setDaemon(true);
+		thread.start();		
 		
-		CircularProgressBar cAtt = (CircularProgressBar) view.findViewById(R.id.circle_attention);
-		cAtt.setTitle("44");
+		cAtt = (CircularProgressBar) view.findViewById(R.id.circle_attention);
 		cAtt.setSubTitle("Attention");
-		cAtt.setProgress(44);
-		
-		CircularProgressBar cMed = (CircularProgressBar) view.findViewById(R.id.circle_meditation);
-		cMed.setTitle("74");
+		cMed = (CircularProgressBar) view.findViewById(R.id.circle_meditation);
 		cMed.setSubTitle("Meditation");
-		cMed.setProgress(74);
 		
-		
-		test_arduino.setOnClickListener(this);
-		
-		
-    	return view;
+		return view;
 	}
 	@SuppressLint("NewApi")
 	@Override
@@ -53,27 +52,32 @@ public class ScanActivity extends Fragment implements OnClickListener {
 	    super.onSaveInstanceState(outState);
 	    setUserVisibleHint(true);
 	}
-	public void onToggleLED(View view){
-		System.out.println("mSPP Addr > " + mSPP.getBluetoothAddress());
-		System.out.println("mSPP isConn > " + mSPP.isConnected());
-		
-		String message = "1";
-		
-		if(mSPP.isConnected())
-		{
-			byte[] send = message.getBytes();
-			
-			mSPP.write(send, 0, send.length);
-			//mStateLED = 1 - mStateLED;
-		}
-	}
-	@Override
+	
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()){
-		case R.id.test_arduino :
-			onToggleLED(v);
-		break;
 		}	
 	}
+
+	Handler mHandler = new Handler();
+	
+	class PrintThread extends Thread{
+		public void run(){
+			while(true){
+				mHandler.post(new Runnable(){
+					public void run() {
+						// TODO Auto-generated method stub
+						cAtt.setTitle(Integer.toString(bWave.getAtt()) + "%");
+						cAtt.setProgress(bWave.getAtt());
+						cMed.setTitle(Integer.toString(bWave.getMed()) + "%");
+						cMed.setProgress(bWave.getMed());						
+					}
+				});
+				try{
+					Thread.sleep(1000);
+				} catch(InterruptedException e){;}
+			}
+		}
+	}
 }
+
