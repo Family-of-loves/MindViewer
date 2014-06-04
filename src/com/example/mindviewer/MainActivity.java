@@ -2,6 +2,8 @@ package com.example.mindviewer;
 
 import java.util.Locale;
 
+import com.example.mindviewer.BlueSmirf.BlueSmirfSPP;
+
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
@@ -33,6 +35,9 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 	 * The {@link ViewPager} that will host the section contents.
 	 */
 	ViewPager mViewPager;
+	
+
+	static private BlueSmirfSPP      mSPP = new BlueSmirfSPP();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -127,9 +132,9 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 			// below).
 			switch(position) {
 			case 0:
-				return new ConnActivity(mContext);
+				return new ConnActivity(mContext, mSPP);
 			case 1:
-				return new ScanActivity(mContext);
+				return new ScanActivity(mContext, mSPP);
 			}
 			return null;
 			//return PlaceholderFragment.newInstance(position + 1);
