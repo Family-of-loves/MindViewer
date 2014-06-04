@@ -87,14 +87,10 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 		
 		mTextViewStatus         = (TextView) view.findViewById(R.id.section2_status);
 		ArrayList<String> items = new ArrayList<String>();
-		
 		mSpinnerArduinoDevices         = (Spinner) view.findViewById(R.id.spinner_arduino);
-		
 		mArrayAdapterDevices    = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, items);
-		
 		mHandler                = new Handler(this);
 		mSpinnerArduinoDevices.setOnItemSelectedListener(this);
-		
 		mArrayAdapterDevices.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		
 		/* Bluetooth 목록을 스피로 저장한다. */
@@ -238,20 +234,17 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 		mArrayListBluetoothAddress.clear();
 		if(devices.size() > 0)
 		{
-			for(BluetoothDevice device : devices)
-			{
+			for(BluetoothDevice device : devices){
 				mArrayAdapterDevices.add(device.getName());
 				mArrayListBluetoothAddress.add(device.getAddress());
 			}
 
 			// request that the user selects a device
-			if(mSmirfBluetoothAddress == null)
-			{
+			if(mSmirfBluetoothAddress == null){
 				mSpinnerArduinoDevices.performClick();
 			}
 		}
-		else
-		{
+		else{
 			mSmirfBluetoothAddress = null;
 		}
 
@@ -294,8 +287,7 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 			mStatePOT = mSPP.readByte();
 			mStatePOT |= mSPP.readByte() << 8;
 
-			if(mSPP.isError())
-			{
+			if(mSPP.isError()){
 				mSPP.disconnect();
 			}
 
