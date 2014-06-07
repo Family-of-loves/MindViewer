@@ -15,57 +15,58 @@
         android:paddingRight="@dimen/activity_vertical_margin"
         android:paddingTop="@dimen/activity_vertical_margin" >
 
-		<TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Scan eSense" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:layout_weight="1"
-            android:gravity="top|center"
-            android:orientation="horizontal" >
-            
-            <com.example.mindviewer.Widget.CircularProgressBar
-                android:id="@+id/circle_attention"
-                style="@style/Widget.ProgressBar.Holo.CircularProgressBar"
-                android:layout_width="130dp"
-                android:layout_height="130dp"
-                android:layout_weight="1"
-                circular:subtitle="subtitle"
-                circular:title="Title" />
-
-            <com.example.mindviewer.Widget.CircularProgressBar
-                android:id="@+id/circle_meditation"
-                style="@style/Widget.ProgressBar.Holo.CircularProgressBar"
-                android:layout_width="130dp"
-                android:layout_height="130dp"
-                android:layout_weight="1"
-                circular:subtitle="subtitle"
-                circular:title="Title" />
-
-		</LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical" >
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" >
-            
-        </LinearLayout>
-
-       
         
+
+			<TextView
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1"
+	                android:text="Scan eSense" />
+	
+	
+	        <LinearLayout
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center"
+	            android:layout_marginTop="8dp"
+	            android:layout_weight="1"
+	            android:gravity="top|center"
+	            android:orientation="horizontal" >
+	            
+	            <com.example.mindviewer.Widget.CircularProgressBar
+	                android:id="@+id/circle_attention"
+	                style="@style/Widget.ProgressBar.Holo.CircularProgressBar"
+	                android:layout_width="130dp"
+	                android:layout_height="130dp"
+	                android:layout_weight="1"
+	                circular:subtitle="subtitle"
+	                circular:title="Title" />
+	
+	            <com.example.mindviewer.Widget.CircularProgressBar
+	                android:id="@+id/circle_meditation"
+	                style="@style/Widget.ProgressBar.Holo.CircularProgressBar"
+	                android:layout_width="130dp"
+	                android:layout_height="130dp"
+	                android:layout_weight="1"
+	                circular:subtitle="subtitle"
+	                circular:title="Title" />
+	
+			</LinearLayout>
+
+	        <LinearLayout
+	            android:id="@+id/chart"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:orientation="vertical" >
+	        </LinearLayout>
+       
+    	</LinearLayout>    
     </LinearLayout>
 
 </ScrollView>
