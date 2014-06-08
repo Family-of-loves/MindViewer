@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 public class MainActivity extends Activity implements ActionBar.TabListener {
-
+	Context mContext;
 	int totalPages = 3;
 	static private BlueSmirfSPP      mSPP = new BlueSmirfSPP();
 	/**
@@ -121,7 +121,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 	 * one of the sections/tabs/pages.
 	 */
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
-		Context mContext;
+
 		public SectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
 		}

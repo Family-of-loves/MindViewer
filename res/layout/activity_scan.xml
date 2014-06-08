@@ -58,13 +58,31 @@
 	
 			</LinearLayout>
 
-	        <LinearLayout
-	            android:id="@+id/chart"
-	            android:layout_width="match_parent"
+	        <TextView
+	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_weight="1"
-	            android:orientation="vertical" >
-	        </LinearLayout>
+	            android:layout_marginTop="14dp"
+	            android:text="Each Brainwave" />
+
+	        <LinearLayout
+	            android:id="@+id/linearChart"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_above="@+id/view"
+	            android:layout_marginTop="50dp"
+	            android:gravity="bottom"
+	            android:orientation="horizontal" >
+ 
+	       </LinearLayout> 
+	       <View 
+	           android:id="@+id/view" 
+	           android:layout_width="match_parent" 
+	           android:layout_height="25dp" 
+	           android:layout_alignParentBottom="true" android:background="#00FF00" />
+
+
+		        
        
     	</LinearLayout>    
     </LinearLayout>
