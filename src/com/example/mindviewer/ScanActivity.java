@@ -141,6 +141,7 @@ public class ScanActivity extends Fragment implements OnClickListener {
 						if(timeCnt==sensingTime){
 							if( ((totalAtt/sensingTime) > 80) && ((totalMed/sensingTime) > 80) ){
 								onSendCmdArduino("g");
+								
 							} else if ( ((totalAtt/sensingTime) > 80) && ((totalMed/sensingTime) > 50) ){
 								onSendCmdArduino("g");
 							} else if ( ((totalAtt/sensingTime) > 30) && ((totalMed/sensingTime) > 80) ){

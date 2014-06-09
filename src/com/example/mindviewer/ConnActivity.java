@@ -174,8 +174,9 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 				break;
 				
 				case TGDevice.MSG_EEG_POWER:
-					//TGEegPower ep = (TGEegPower)msg.obj            ;
+					TGEegPower ep = (TGEegPower)msg.obj            ;
 					//Log.v("HelloEEG", "Delta: " + ep.delta);
+					bWave.setDt(ep.delta);
 				
 				default:
 				break;

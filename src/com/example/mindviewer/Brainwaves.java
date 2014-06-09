@@ -47,14 +47,14 @@ public class Brainwaves {
 	int getAtt(){ return this.attention; }
 	int getMed(){ return this.meditation; }
 	
-	double setDt(){	return this.delta;	}
-	double setTh(){	return this.theta;	}
-	double setLa(){	return this.lowAlpha;	}
-	double setHa(){	return this.highAlpha;	}
-	double setLb(){	return this.lowBeta;	}
-	double setHb(){	return this.highBeta;	}
-	double setLg(){	return this.lowGamma;	}
-	double setHg(){	return this.highGamma;	}
+	double getDt(){	return this.delta;	}
+	double getTh(){	return this.theta;	}
+	double getLa(){	return this.lowAlpha;	}
+	double getHa(){	return this.highAlpha;	}
+	double getLb(){	return this.lowBeta;	}
+	double getHb(){	return this.highBeta;	}
+	double getLg(){	return this.lowGamma;	}
+	double getHg(){	return this.highGamma;	}
 	
 	
 }
