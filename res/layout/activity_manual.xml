@@ -57,7 +57,7 @@
 	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
 	                    android:textSize="14sp"
-	                    android:text="너무너무 우울해요." />
+	                    android:text="지금 긴장되요." />
 	            </RadioGroup>
              </LinearLayout>
 

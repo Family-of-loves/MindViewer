@@ -127,32 +127,42 @@ public class ScanActivity extends Fragment implements OnClickListener {
 				mHandler.post(new Runnable(){
 					public void run() {
 						// TODO Auto-generated method stub
-						cAtt.setTitle(Integer.toString(bWave.getAtt()) + "%");
-						cAtt.setProgress(bWave.getAtt());
-						cMed.setTitle(Integer.toString(bWave.getMed()) + "%");
-						cMed.setProgress(bWave.getMed());
-						
-						totalAtt += bWave.getAtt();
-						totalMed += bWave.getMed();
-						timeCnt ++;
-						/*
-						 * PlayList 를 생성하고 노래가 동시에 틀어져야함.
-						 */
-						if(timeCnt==sensingTime){
-							if( ((totalAtt/sensingTime) > 80) && ((totalMed/sensingTime) > 80) ){
-								onSendCmdArduino("g");
+						if(bWave.isScan){
+							cAtt.setTitle(Integer.toString(bWave.getAtt()) + "%");
+							cAtt.setProgress(bWave.getAtt());
+							cMed.setTitle(Integer.toString(bWave.getMed()) + "%");
+							cMed.setProgress(bWave.getMed());
+							
+							System.out.println("Debug : " + bWave.getSig() + " / " + timeCnt + " / " + sensingTime);
+							
+							if(bWave.getSig() == 0){
+								totalAtt += bWave.getAtt();
+								totalMed += bWave.getMed();
+								timeCnt ++;
 								
-							} else if ( ((totalAtt/sensingTime) > 80) && ((totalMed/sensingTime) > 50) ){
-								onSendCmdArduino("g");
-							} else if ( ((totalAtt/sensingTime) > 30) && ((totalMed/sensingTime) > 80) ){
-								onSendCmdArduino("g");
-							} else if ( ((totalAtt/sensingTime) > 50) && ((totalMed/sensingTime) > 50) ){
-								onSendCmdArduino("g");
-							} else if ( ((totalAtt/sensingTime) > 30) && ((totalMed/sensingTime) > 50) ){
-								onSendCmdArduino("g");
+							}
+							/*
+							 * PlayList 를 생성하고 노래가 동시에 틀어져야함.
+							 */
+							if(timeCnt == sensingTime){
+								if( ((totalAtt/sensingTime) > 80) && ((totalMed/sensingTime) > 80) ){
+									onSendCmdArduino("g");
+									System.out.println("LEVEL1");
+								} else if ( ((totalAtt/sensingTime) > 80) && ((totalMed/sensingTime) > 50) ){
+									onSendCmdArduino("g");
+									System.out.println("LEVEL1");
+								} else if ( ((totalAtt/sensingTime) > 30) && ((totalMed/sensingTime) > 80) ){
+									onSendCmdArduino("g");
+									System.out.println("LEVEL1");
+								} else if ( ((totalAtt/sensingTime) > 50) && ((totalMed/sensingTime) > 50) ){
+									onSendCmdArduino("g");
+									System.out.println("LEVEL1");
+								} else if ( ((totalAtt/sensingTime) > 30) && ((totalMed/sensingTime) > 50) ){
+									onSendCmdArduino("g");
+									System.out.println("LEVEL1");
+								}
 							}
 						}
-						
 					}
 				});
 				try{

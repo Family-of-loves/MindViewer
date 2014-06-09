@@ -6,6 +6,8 @@ public class Brainwaves {
 	private volatile static Brainwaves uniqueInstance;
 	
 	/* EEG eSense Values */
+	boolean isScan = false;
+	int poorSignal;
 	int attention;
 	int meditation;
 	
@@ -31,10 +33,11 @@ public class Brainwaves {
 		}
 		return uniqueInstance;
 	}
-	
+	void setSig(int val)	{	poorSignal = val;	}
 	void setAtt(int val)	{	attention = val;	}
 	void setMed(int val)	{	meditation = val;	}
 	
+	void setScanState(boolean val) 	{	isScan = val;		}
 	void setDt(double val)	{	delta = val;	}
 	void setTh(double val)	{	theta = val;	}
 	void setLa(double val)	{	lowAlpha = val;	}
@@ -44,9 +47,11 @@ public class Brainwaves {
 	void setLg(double val)	{	lowGamma = val;	}
 	void setHg(double val)	{	highGamma = val;	}
 	
+	int getSig(){ return this.poorSignal; }
 	int getAtt(){ return this.attention; }
 	int getMed(){ return this.meditation; }
 	
+	boolean getScanState(){return isScan;}
 	double getDt(){	return this.delta;	}
 	double getTh(){	return this.theta;	}
 	double getLa(){	return this.lowAlpha;	}
