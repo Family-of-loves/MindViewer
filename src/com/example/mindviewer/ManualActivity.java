@@ -77,6 +77,8 @@ public class ManualActivity extends Fragment implements OnClickListener, RadioGr
 		if(mSPP.isConnected()){
 			byte[] send = message.getBytes();
 			mSPP.write(send, 0, send.length);
+		} else {
+			Toast.makeText(getActivity(), "아두이노가 연결이 되어있지 않습니다.", Toast.LENGTH_SHORT).show();
 		}
 	}
 	

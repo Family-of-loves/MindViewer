@@ -19,6 +19,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 @SuppressLint("ValidFragment")
 public class ScanActivity extends Fragment implements OnClickListener {
@@ -29,6 +30,11 @@ public class ScanActivity extends Fragment implements OnClickListener {
 	Brainwaves bWave;
 	CircularProgressBar cAtt;
 	CircularProgressBar cMed;
+	
+	int timeCnt = 0;
+	int sensingTime = 30;
+	int totalAtt;
+	int totalMed;
 	
 	//LinearLayout linearChart;
 	
@@ -96,7 +102,23 @@ public class ScanActivity extends Fragment implements OnClickListener {
 		switch (v.getId()){
 		}	
 	}
+	
+	public void onSendCmdArduino(String cmd){
+		/*
+		System.out.println("mSPP Addr > " + mSPP.getBluetoothAddress());
+		System.out.println("mSPP isConn > " + mSPP.isConnected());
+		*/
 
+		String message = cmd;
+		
+		if(mSPP.isConnected()){
+			byte[] send = message.getBytes();
+			mSPP.write(send, 0, send.length);
+		} else {
+			Toast.makeText(getActivity(), "아두이노가 연결이 되어있지 않습니다.", Toast.LENGTH_SHORT).show();
+		}
+	}
+	
 	Handler mHandler = new Handler();
 	
 	class PrintThread extends Thread{
@@ -109,6 +131,27 @@ public class ScanActivity extends Fragment implements OnClickListener {
 						cAtt.setProgress(bWave.getAtt());
 						cMed.setTitle(Integer.toString(bWave.getMed()) + "%");
 						cMed.setProgress(bWave.getMed());
+						
+						totalAtt += bWave.getAtt();
+						totalMed += bWave.getMed();
+						timeCnt ++;
+						/*
+						 * PlayList 를 생성하고 노래가 동시에 틀어져야함.
+						 */
+						if(timeCnt==sensingTime){
+							if( ((totalAtt/sensingTime) > 80) && ((totalMed/sensingTime) > 80) ){
+								onSendCmdArduino("g");
+							} else if ( ((totalAtt/sensingTime) > 80) && ((totalMed/sensingTime) > 50) ){
+								onSendCmdArduino("g");
+							} else if ( ((totalAtt/sensingTime) > 30) && ((totalMed/sensingTime) > 80) ){
+								onSendCmdArduino("g");
+							} else if ( ((totalAtt/sensingTime) > 50) && ((totalMed/sensingTime) > 50) ){
+								onSendCmdArduino("g");
+							} else if ( ((totalAtt/sensingTime) > 30) && ((totalMed/sensingTime) > 50) ){
+								onSendCmdArduino("g");
+							}
+						}
+						
 					}
 				});
 				try{
