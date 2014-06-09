@@ -18,13 +18,15 @@ import android.widget.Toast;
 public class ManualActivity extends Fragment implements OnClickListener, RadioGroup.OnCheckedChangeListener {
 	Context mContext;
 	BlueSmirfSPP mSPP;
+	Brainwaves bWave;
 	
 	String cmd;
 	Button startCare;
 	
 	public ManualActivity(Context context, BlueSmirfSPP mSPP) {
-		mContext = context;
-		this.mSPP = mSPP;
+		mContext 	= context;
+		bWave 		= Brainwaves.getInstance();
+		this.mSPP 	= mSPP;
 	}
 	
 	@Override
@@ -60,6 +62,7 @@ public class ManualActivity extends Fragment implements OnClickListener, RadioGr
 		// TODO Auto-generated method stub
 		switch(v.getId()){
 		case R.id.startCare :
+				bWave.setScanState(false);
 				onSendCmdArduino(v, cmd);
 				Toast.makeText(getActivity(), "시작합니다. 이제 안정을 취하세요.", Toast.LENGTH_SHORT).show();
 			break;
@@ -67,11 +70,6 @@ public class ManualActivity extends Fragment implements OnClickListener, RadioGr
 	}
 	
 	public void onSendCmdArduino(View view, String cmd){
-		/*
-		System.out.println("mSPP Addr > " + mSPP.getBluetoothAddress());
-		System.out.println("mSPP isConn > " + mSPP.isConnected());
-		*/
-
 		String message = cmd;
 		
 		if(mSPP.isConnected()){

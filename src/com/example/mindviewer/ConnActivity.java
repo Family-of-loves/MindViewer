@@ -5,7 +5,6 @@ import java.util.Set;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -39,6 +38,7 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 	TGDevice tgDevice;
 	TGEegPower tgEeg;
 	BluetoothAdapter btAdapter;
+	BlueSmirfSPP mSPP;
 	Brainwaves bWave;
 	
 	Button btn_mindset_conn;
@@ -52,9 +52,8 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 	
 	/* BlueSmirf */
 	static final String TAG = "BlueSmirfDemo";
-
+		
 	// app state
-	static BlueSmirfSPP      mSPP;
 	boolean           mIsThreadRunning;
 	String            mSmirfBluetoothAddress;
 	ArrayList<String> mArrayListBluetoothAddress;
@@ -89,11 +88,9 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 		
 		/* Bluetooth 목록을 스피로 저장한다. */
 		mSpinnerArduinoDevices.setAdapter(mArrayAdapterDevices);
-		
-		
+				
 		/* TextView Def */
 		section1_status = (TextView) view.findViewById(R.id.section1_status);
-		section2_status = (TextView) view.findViewById(R.id.section2_status);
 		
 		/* Button Def */
 		btn_mindset_conn = (Button) view.findViewById(R.id.btn_mindset_conn);
@@ -119,11 +116,18 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 					toggleConnMindSet(false);
 				}
 			break;
+			
 			case R.id.btn_arduino_conn :
 				if(btn_arduino_conn_state == 0){
 					onConnectLink(v);
 					toggleConnArduino(true);
 				} else {
+					String message = "f";
+					byte[] send = message.getBytes();
+					
+					mSPP.write(send, 0, send.length);
+					switchOn = false;
+					
 					onDisconnectLink(v);
 					toggleConnArduino(false);
 				}
@@ -144,10 +148,10 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 						break;
 						case TGDevice.STATE_CONNECTING:
 							Toast.makeText(getActivity(), "Mindset과 연결중입니다.", Toast.LENGTH_SHORT).show();
+							toggleConnMindSet(true);
 						break;
 						case TGDevice.STATE_CONNECTED:
 							Toast.makeText(getActivity(), "Mindset과 연결되었습니다.", Toast.LENGTH_SHORT).show();
-							bWave.setScanState(true);
 							toggleConnMindSet(true);
 							tgDevice.start();
 						break;
@@ -226,22 +230,20 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 			section1_status.setText("Disconnected");
 		}	
 	}
-	public void toggleConnArduino(boolean isConnected){
-		if(isConnected){
-			btn_arduino_conn_state = 1;
-			btn_arduino_conn.setText("Disconnect to Mindset");
-			section2_status.setText("Connected");
-		}else{
-			btn_arduino_conn_state = 0;
-			btn_arduino_conn.setText("Connect to Mindset");
-			section2_status.setText("Disconnected");
-		}	
-	}
-	
 	
 	/*
 	 * Connection Arduino
 	*/
+	
+	public void toggleConnArduino(boolean isConnected){
+		if(isConnected){
+			btn_arduino_conn_state = 1;
+			btn_arduino_conn.setText("Disconnect to Arduino");
+		}else{
+			btn_arduino_conn_state = 0;
+			btn_arduino_conn.setText("Connect to Arduino");
+		}	
+	}
 	
 	@Override
 	public void onResume()
@@ -293,12 +295,6 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 	}
 
 	public void onDisconnectLink(View view){
-		String message = "f";
-		byte[] send = message.getBytes();
-		
-		mSPP.write(send, 0, send.length);
-		
-		switchOn = false;
 		mSPP.disconnect();
 	}
 
