@@ -89,8 +89,9 @@
                 android:text="치료받기"
                 android:textColor="#FFFF" />
 
-            
-			<Button
+
+            <Button
+
                 android:id="@+id/musicStop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
