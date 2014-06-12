@@ -57,22 +57,19 @@
 	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
 	                    android:textSize="14sp"
-	                    android:text="너무 긴장되요." />
-	                
+	                    android:text="너무너무 우울해요." />
 	                <RadioButton
 	                    android:id="@+id/type4"
 	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
 	                    android:textSize="14sp"
-	                    android:text="집중이 되지 않아요." />
-	                
+	                    android:text="너무너무 우울해요." />
 	                <RadioButton
 	                    android:id="@+id/type5"
 	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
 	                    android:textSize="14sp"
-	                    android:text="심신이 많이 허약해졌어요." />
-	                
+	                    android:text="너무너무 우울해요." />
 	            </RadioGroup>
              </LinearLayout>
 
@@ -92,6 +89,14 @@
                 android:text="치료받기"
                 android:textColor="#FFFF" />
 
+            
+			<Button
+                android:id="@+id/musicStop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_green_bg"
+                android:text="음악끄기"
+                android:textColor="#FFFF" />
         </LinearLayout>
     </LinearLayout>
 

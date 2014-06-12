@@ -7,16 +7,20 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 @SuppressLint("ValidFragment")
-public class ScanActivity extends Fragment implements OnClickListener {
+public class ScanActivity extends Fragment  {
 	Context mContext;
 
 	Button btn_startBrainScan;
@@ -24,6 +28,11 @@ public class ScanActivity extends Fragment implements OnClickListener {
 	Brainwaves bWave;
 	CircularProgressBar cAtt;
 	CircularProgressBar cMed;
+	ProgressBar bar;
+	ToggleButton start;
+	
+	private volatile Thread theProgressBarThread1;
+	public int CurrentPosition;
 	
 	int appMode = 0;
 	int timeCnt = 0;
@@ -44,12 +53,31 @@ public class ScanActivity extends Fragment implements OnClickListener {
 			ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.activity_scan, null);
 		
-		btn_startBrainScan = (Button) view.findViewById(R.id.startBrainScan);
-		btn_startBrainScan.setOnClickListener(this);
+		bar = (ProgressBar) view.findViewById(R.id.progressBar1);
+		bar.setVisibility(ProgressBar.GONE);
+
+		start = (ToggleButton) view.findViewById(R.id.brainstart);
+		start.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (((ToggleButton) v).isChecked()) {
+					bar.setVisibility(ProgressBar.VISIBLE);
+					bWave.setScanState(true);
+					startProgressBarThread();
+					PrintThread thread = new PrintThread();
+					thread.setDaemon(true);
+					thread.start();		
+				} else {
+					bar.setVisibility(ProgressBar.GONE);
+					bWave.setScanState(false);
+					stopProgressBarThread();
+				}
+
+			}
+		});
 		
-		PrintThread thread = new PrintThread();
-		thread.setDaemon(true);
-		thread.start();		
+		
 		
 		cAtt = (CircularProgressBar) view.findViewById(R.id.circle_attention);
 		cAtt.setSubTitle("Attention");
@@ -58,6 +86,28 @@ public class ScanActivity extends Fragment implements OnClickListener {
 		
 		return view;
 	}
+	
+	public synchronized void startProgressBarThread() {
+		if (theProgressBarThread1 == null) {
+			theProgressBarThread1 = new Thread(null, backgroundThread1,
+					"startProgressBarThread");
+			CurrentPosition = 0;
+			theProgressBarThread1.start();
+		}
+	}
+
+	public synchronized void stopProgressBarThread() {
+		if (theProgressBarThread1 != null) {
+			Thread tmpThread = theProgressBarThread1;
+			theProgressBarThread1 = null;
+			tmpThread.interrupt();
+		}
+		bar.setVisibility(ProgressBar.GONE);
+		start.setChecked(false);
+		start.invalidate();
+	}
+
+	
 	@SuppressLint("NewApi")
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
@@ -65,17 +115,7 @@ public class ScanActivity extends Fragment implements OnClickListener {
 	    setUserVisibleHint(true);
 	}
 		
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		switch (v.getId()){
-			case R.id.startBrainScan :
-				Toast.makeText(getActivity(), sensingTime + "초간 측정을 시작합니다.", Toast.LENGTH_SHORT).show();
-				bWave.setScanState(true);
-				btn_startBrainScan.setEnabled(false);
-				btn_startBrainScan.setText("스캔 중 입니다...");
-			break;
-		}	
-	}
+	
 	
 	public void onSendCmdArduino(String cmd){
 		String message = cmd;
@@ -87,6 +127,46 @@ public class ScanActivity extends Fragment implements OnClickListener {
 			Toast.makeText(getActivity(), "아두이노가 연결이 되어있지 않습니다.", Toast.LENGTH_SHORT).show();
 		}
 	}
+	
+	
+	private Runnable backgroundThread1 = new Runnable() {
+		@Override
+		public void run() {
+
+			if (Thread.currentThread() == theProgressBarThread1) {
+				CurrentPosition = 0;
+				final int total = 100;
+				while (CurrentPosition < total) {
+					try {
+						progressBarHandle.sendMessage(progressBarHandle.obtainMessage());
+						long time= (long)(total / sensingTime)*100;
+						Log.e("err", time+"");
+						Thread.sleep(time);
+					} catch (final InterruptedException e) {
+						return;
+					} catch (final Exception e) {
+						return;
+					}
+				}
+			}
+		}
+
+			
+		Handler progressBarHandle = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				CurrentPosition++;
+				bar.setProgress(CurrentPosition);
+				start.setText("" + CurrentPosition + "%");
+				if (CurrentPosition == 100) {
+					stopProgressBarThread();
+				}
+
+			}
+		};
+
+	};
+	
 	
 	Handler mHandler = new Handler();
 	
@@ -132,12 +212,10 @@ public class ScanActivity extends Fragment implements OnClickListener {
 								} else {
 									Toast.makeText(getActivity(), "기분을 알 수 없어요. 다시 측정할게요!", Toast.LENGTH_SHORT).show();
 									timeCnt = 0;
+									
 								}
 							}
-						} else {
-							btn_startBrainScan.setEnabled(true);
-							btn_startBrainScan.setText("뇌파 스캔 시작!");
-						}
+						} 
 					}
 				});
 				try{

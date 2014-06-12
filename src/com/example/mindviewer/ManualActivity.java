@@ -4,6 +4,7 @@ import com.example.mindviewer.BlueSmirf.BlueSmirfSPP;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -22,7 +23,8 @@ public class ManualActivity extends Fragment implements OnClickListener, RadioGr
 	
 	String cmd;
 	Button startCare;
-	
+	Button musicStop;
+	MediaPlayer background;
 	public ManualActivity(Context context, BlueSmirfSPP mSPP) {
 		mContext 	= context;
 		bWave 		= Brainwaves.getInstance();
@@ -35,6 +37,9 @@ public class ManualActivity extends Fragment implements OnClickListener, RadioGr
 		View view = inflater.inflate(R.layout.activity_manual, null);
 		startCare = (Button) view.findViewById(R.id.startCare);
 		startCare.setOnClickListener(this);
+		
+		musicStop = (Button) view.findViewById(R.id.musicStop);
+		musicStop.setOnClickListener(this);
 		
 		RadioGroup feelingLists = (RadioGroup) view.findViewById(R.id.feelingList);
 		feelingLists.setOnCheckedChangeListener(this);
@@ -71,6 +76,22 @@ public class ManualActivity extends Fragment implements OnClickListener, RadioGr
 				bWave.setScanState(false);
 				onSendCmdArduino(v, cmd);
 				Toast.makeText(getActivity(), "시작합니다. 이제 안정을 취하세요.", Toast.LENGTH_SHORT).show();
+			
+				if(background!=null)
+					background.stop();	// 중복재생 방지 //
+
+				//background = MediaPlayer.create(super.getActivity(),R.raw.background);
+				// 노래 파일만 넣으면댐
+				background.start();
+				background.setLooping(true);
+
+				
+				break;
+			
+
+
+		case R.id.musicStop:
+			background.stop();
 			break;
 		}
 	}
