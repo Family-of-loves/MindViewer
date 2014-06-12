@@ -24,8 +24,10 @@ public class ManualActivity extends Fragment implements OnClickListener, RadioGr
 	String cmd;
 	Button startCare;
 	Button musicStop;
+
 	private MediaPlayer background;
 	
+
 	public ManualActivity(Context context, BlueSmirfSPP mSPP) {
 		mContext 	= context;
 		bWave 		= Brainwaves.getInstance();
@@ -73,17 +75,25 @@ public class ManualActivity extends Fragment implements OnClickListener, RadioGr
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch(v.getId()){
-		case R.id.startCare:
-			onSendCmdArduino(v, cmd);
-			Toast.makeText(getActivity(), "시작합니다. 이제 안정을 취하세요.",
-					Toast.LENGTH_SHORT).show();
-			
-				background = MediaPlayer.create(super.getActivity(),
-						R.raw.background);
 
-				background.start();
+		case R.id.startCare :
+				bWave.setScanState(false);
+				onSendCmdArduino(v, cmd);
+				Toast.makeText(getActivity(), "시작합니다. 이제 안정을 취하세요.", Toast.LENGTH_SHORT).show();
 			
-			break;
+				if(background!=null)
+					background.stop();	// 중복재생 방지 //
+
+				background = MediaPlayer.create(super.getActivity(),R.raw.background);
+				// 노래 파일만 넣으면댐
+				background.start();
+				background.setLooping(true);
+
+				
+				break;
+		
+
+
 
 		case R.id.musicStop:
 			background.stop();

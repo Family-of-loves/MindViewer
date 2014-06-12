@@ -44,8 +44,8 @@
 	                android:layout_width="130dp"
 	                android:layout_height="130dp"
 	                android:layout_weight="1"
-	                circular:subtitle="subtitle"
-	                circular:title="Title" />
+	                circular:subtitle="Attention"
+	                circular:title="0%" />
 	
 	            <com.example.mindviewer.Widget.CircularProgressBar
 	                android:id="@+id/circle_meditation"
@@ -53,8 +53,8 @@
 	                android:layout_width="130dp"
 	                android:layout_height="130dp"
 	                android:layout_weight="1"
-	                circular:subtitle="subtitle"
-	                circular:title="Title" />
+	                circular:subtitle="Meditation"
+	                circular:title="0%" />
 	
 			</LinearLayout>
 
@@ -63,15 +63,20 @@
        
     	</LinearLayout>
 
-        <Button
-            android:id="@+id/startBrainScan"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/btn_green_bg"
-            android:text="뇌파 스캔 시작!"
-            android:textColor="#FFFFFF" />
+         <ToggleButton
+	            android:id="@+id/brainstart"
+	            android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_green_bg"
+                android:text="측정시작"
+                android:textColor="#FFFF" />
+	        
+	            
+ 			 <ProgressBar
+	                android:id="@+id/progressBar1"
+	                style="?android:attr/progressBarStyleHorizontal"
+	                android:layout_width="match_parent"
+	                android:layout_height="wrap_content" />
     
     </LinearLayout>
 
