@@ -115,20 +115,20 @@ public class ScanActivity extends Fragment implements OnClickListener {
 							 */
 							if(timeCnt == sensingTime){
 								if( ((totalAtt/sensingTime) > 80) && ((totalMed/sensingTime) > 80) ){
+									onSendCmdArduino("s");
+									
+								} else if ( ((totalAtt/sensingTime) > 80) && ((totalMed/sensingTime) < 50) ){
+									onSendCmdArduino("t");
+									
+								} else if ( ((totalAtt/sensingTime) < 30) && ((totalMed/sensingTime) > 80) ){
+									onSendCmdArduino("a");
+									
+								} else if ( ((totalAtt/sensingTime) < 50) && ((totalMed/sensingTime) < 50) ){
 									onSendCmdArduino("g");
-									System.out.println("LEVEL1");
-								} else if ( ((totalAtt/sensingTime) > 80) && ((totalMed/sensingTime) > 50) ){
-									onSendCmdArduino("g");
-									System.out.println("LEVEL1");
-								} else if ( ((totalAtt/sensingTime) > 30) && ((totalMed/sensingTime) > 80) ){
-									onSendCmdArduino("g");
-									System.out.println("LEVEL1");
-								} else if ( ((totalAtt/sensingTime) > 50) && ((totalMed/sensingTime) > 50) ){
-									onSendCmdArduino("g");
-									System.out.println("LEVEL1");
-								} else if ( ((totalAtt/sensingTime) > 30) && ((totalMed/sensingTime) > 50) ){
-									onSendCmdArduino("g");
-									System.out.println("LEVEL1");
+									
+								} else if ( ((totalAtt/sensingTime) < 30) && ((totalMed/sensingTime) < 50) ){
+									onSendCmdArduino("w");
+									
 								} else {
 									Toast.makeText(getActivity(), "기분을 알 수 없어요. 다시 측정할게요!", Toast.LENGTH_SHORT).show();
 									timeCnt = 0;

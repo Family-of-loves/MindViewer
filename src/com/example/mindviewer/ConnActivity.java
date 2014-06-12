@@ -110,8 +110,7 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 				if(btn_mindset_conn_state == 0){
 					onConnMindset(v);
 					toggleConnMindSet(true);
-				}
-				else {
+				}else {
 					tgDevice.close();
 					toggleConnMindSet(false);
 				}
@@ -122,6 +121,7 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 					onConnectLink(v);
 					toggleConnArduino(true);
 				} else {
+					System.out.println("Try Disconn?");
 					String message = "f";
 					byte[] send = message.getBytes();
 					
@@ -276,7 +276,7 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 
 	@Override
 	public void onPause(){
-		mSPP.disconnect();
+		//mSPP.disconnect();
 		super.onPause();
 	}
 
@@ -334,10 +334,13 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 
 	private void UpdateUI(){
 		if(mSPP.isConnected()){
+			
 			if(!switchOn){
 				String message = "o";
 				byte[] send = message.getBytes();
 				mSPP.write(send, 0, send.length);
+				
+				
 				switchOn = true;
 			}
 			mTextViewStatus.setText("Connected");

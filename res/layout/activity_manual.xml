@@ -57,7 +57,22 @@
 	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
 	                    android:textSize="14sp"
-	                    android:text="지금 긴장되요." />
+	                    android:text="너무 긴장되요." />
+	                
+	                <RadioButton
+	                    android:id="@+id/type4"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:textSize="14sp"
+	                    android:text="집중이 되지 않아요." />
+	                
+	                <RadioButton
+	                    android:id="@+id/type5"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:textSize="14sp"
+	                    android:text="심신이 많이 허약해졌어요." />
+	                
 	            </RadioGroup>
              </LinearLayout>
 

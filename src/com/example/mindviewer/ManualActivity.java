@@ -55,6 +55,12 @@ public class ManualActivity extends Fragment implements OnClickListener, RadioGr
 		case R.id.type3:
 			cmd = "t";
 		break;
+		case R.id.type4:
+			cmd = "a";
+		break;
+		case R.id.type5:
+			cmd = "w";
+		break;
 		}
 	}
 	
