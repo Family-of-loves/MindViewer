@@ -77,7 +77,7 @@ public class ScanActivity extends Fragment  {
 			}
 		});
 		
-		
+		//
 		
 		cAtt = (CircularProgressBar) view.findViewById(R.id.circle_attention);
 		cAtt.setSubTitle("Attention");
