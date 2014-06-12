@@ -97,11 +97,12 @@ public class ScanActivity extends Fragment implements OnClickListener {
 				mHandler.post(new Runnable(){
 					public void run() {
 						// TODO Auto-generated method stub
+						cAtt.setTitle(Integer.toString(bWave.getAtt()) + "%");
+						cAtt.setProgress(bWave.getAtt());
+						cMed.setTitle(Integer.toString(bWave.getMed()) + "%");
+						cMed.setProgress(bWave.getMed());
+						
 						if(bWave.getScanState()){
-							cAtt.setTitle(Integer.toString(bWave.getAtt()) + "%");
-							cAtt.setProgress(bWave.getAtt());
-							cMed.setTitle(Integer.toString(bWave.getMed()) + "%");
-							cMed.setProgress(bWave.getMed());
 							
 							if(bWave.getSig() == 0){
 								totalAtt += bWave.getAtt();
@@ -115,19 +116,14 @@ public class ScanActivity extends Fragment implements OnClickListener {
 							if(timeCnt == sensingTime){
 								if( ((totalAtt/sensingTime) > 80) && ((totalMed/sensingTime) > 80) ){
 									onSendCmdArduino("s");
-									System.out.println(totalAtt + " / " + totalMed);
 								} else if ( ((totalAtt/sensingTime) > 80) && ((totalMed/sensingTime) < 50) ){
 									onSendCmdArduino("t");
-									
 								} else if ( ((totalAtt/sensingTime) < 30) && ((totalMed/sensingTime) > 80) ){
 									onSendCmdArduino("a");
-									
 								} else if ( ((totalAtt/sensingTime) < 50) && ((totalMed/sensingTime) < 50) ){
 									onSendCmdArduino("g");
-									
 								} else if ( ((totalAtt/sensingTime) < 30) && ((totalMed/sensingTime) < 50) ){
 									onSendCmdArduino("w");
-									
 								} else {
 									Toast.makeText(getActivity(), "기분을 알 수 없어요. 다시 측정할게요!", Toast.LENGTH_SHORT).show();
 									timeCnt = 0;
