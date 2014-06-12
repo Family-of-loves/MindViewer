@@ -73,6 +73,7 @@ public class ManualActivity extends Fragment implements OnClickListener, RadioGr
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch(v.getId()){
+
 		case R.id.startCare:
 			onSendCmdArduino(v, cmd);
 			Toast.makeText(getActivity(), "시작합니다. 이제 안정을 취하세요.",

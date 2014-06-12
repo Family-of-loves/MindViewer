@@ -44,8 +44,8 @@
 	                android:layout_width="130dp"
 	                android:layout_height="130dp"
 	                android:layout_weight="1"
-	                circular:subtitle="subtitle"
-	                circular:title="Title" />
+	                circular:subtitle="Attention"
+	                circular:title="0%" />
 	
 	            <com.example.mindviewer.Widget.CircularProgressBar
 	                android:id="@+id/circle_meditation"
@@ -53,8 +53,8 @@
 	                android:layout_width="130dp"
 	                android:layout_height="130dp"
 	                android:layout_weight="1"
-	                circular:subtitle="subtitle"
-	                circular:title="Title" />
+	                circular:subtitle="Meditation"
+	                circular:title="0%" />
 	
 			</LinearLayout>
 
