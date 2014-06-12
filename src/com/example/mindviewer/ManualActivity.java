@@ -4,6 +4,7 @@ import com.example.mindviewer.BlueSmirf.BlueSmirfSPP;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -22,6 +23,8 @@ public class ManualActivity extends Fragment implements OnClickListener, RadioGr
 	
 	String cmd;
 	Button startCare;
+	Button musicStop;
+	private MediaPlayer background;
 	
 	public ManualActivity(Context context, BlueSmirfSPP mSPP) {
 		mContext 	= context;
@@ -35,6 +38,9 @@ public class ManualActivity extends Fragment implements OnClickListener, RadioGr
 		View view = inflater.inflate(R.layout.activity_manual, null);
 		startCare = (Button) view.findViewById(R.id.startCare);
 		startCare.setOnClickListener(this);
+		
+		musicStop = (Button) view.findViewById(R.id.musicStop);
+		musicStop.setOnClickListener(this);
 		
 		RadioGroup feelingLists = (RadioGroup) view.findViewById(R.id.feelingList);
 		feelingLists.setOnCheckedChangeListener(this);
@@ -67,10 +73,20 @@ public class ManualActivity extends Fragment implements OnClickListener, RadioGr
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch(v.getId()){
-		case R.id.startCare :
-				bWave.setScanState(false);
-				onSendCmdArduino(v, cmd);
-				Toast.makeText(getActivity(), "시작합니다. 이제 안정을 취하세요.", Toast.LENGTH_SHORT).show();
+		case R.id.startCare:
+			onSendCmdArduino(v, cmd);
+			Toast.makeText(getActivity(), "시작합니다. 이제 안정을 취하세요.",
+					Toast.LENGTH_SHORT).show();
+			
+				background = MediaPlayer.create(super.getActivity(),
+						R.raw.background);
+
+				background.start();
+			
+			break;
+
+		case R.id.musicStop:
+			background.stop();
 			break;
 		}
 	}

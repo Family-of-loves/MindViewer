@@ -92,6 +92,13 @@
                 android:text="치료받기"
                 android:textColor="#FFFF" />
 
+            <Button
+                android:id="@+id/musicStop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_green_bg"
+                android:text="음악끄기"
+                android:textColor="#FFFF" />
         </LinearLayout>
     </LinearLayout>
 

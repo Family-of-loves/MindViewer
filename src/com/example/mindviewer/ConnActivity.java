@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.SystemClock;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -118,17 +119,10 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 			
 			case R.id.btn_arduino_conn :
 				if(btn_arduino_conn_state == 0){
-					onConnectLink(v);
+					onConnectLink();
 					toggleConnArduino(true);
 				} else {
-					System.out.println("Try Disconn?");
-					String message = "f";
-					byte[] send = message.getBytes();
-					
-					mSPP.write(send, 0, send.length);
-					switchOn = false;
-					
-					onDisconnectLink(v);
+					onDisconnectLink();
 					toggleConnArduino(false);
 				}
 			break;
@@ -211,6 +205,7 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 	 */
 	public void onConnMindset(View v){
 		btAdapter = BluetoothAdapter.getDefaultAdapter();
+
     	if(btAdapter != null) {
     		bWave = Brainwaves.getInstance();
     		tgDevice = new TGDevice(btAdapter, handler);
@@ -282,10 +277,11 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 
 	@Override
 	public void onDestroy(){
+		onDisconnectLink();
 		super.onDestroy();
 	}
 		
-	public void onConnectLink(View view){
+	public void onConnectLink(){
 		if(mIsThreadRunning == false){
 			mIsThreadRunning = true;
 			UpdateUI();
@@ -294,7 +290,13 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 		}
 	}
 
-	public void onDisconnectLink(View view){
+	public void onDisconnectLink(){
+		String message = "f";
+		byte[] send = message.getBytes();
+		mSPP.write(send, 0, send.length);
+		switchOn = false;
+		SystemClock.sleep(500);
+		
 		mSPP.disconnect();
 	}
 
@@ -309,12 +311,13 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 						
 			if(mSPP.isError()){
 				mSPP.disconnect();
+				toggleConnArduino(false);
 			}
 
 			mHandler.sendEmptyMessage(0);
 
 			// wait briefly before sending the next packet
-			try { Thread.sleep((long) (1000.0F/30.0F)); }
+			try { Thread.sleep((long) (1000.0F/30.0F));	}
 			catch(InterruptedException e) { Log.e(TAG, e.getMessage());}
 		}
 
@@ -334,17 +337,16 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 
 	private void UpdateUI(){
 		if(mSPP.isConnected()){
-			
 			if(!switchOn){
 				String message = "o";
 				byte[] send = message.getBytes();
 				mSPP.write(send, 0, send.length);
 				
-				
-				switchOn = true;
+				switchOn=true;
 			}
 			mTextViewStatus.setText("Connected");
 			toggleConnArduino(true);
+			
 		}
 		else if(mIsThreadRunning){
 			mTextViewStatus.setText("Connecting..");
@@ -353,6 +355,7 @@ public class ConnActivity extends Fragment implements OnClickListener, Runnable,
 		else{
 			mTextViewStatus.setText("Disconnected");
 			toggleConnArduino(false);
+			
 		}
 	}
 

@@ -73,6 +73,7 @@ public class ScanActivity extends Fragment implements OnClickListener {
 				bWave.setScanState(true);
 				btn_startBrainScan.setEnabled(false);
 				btn_startBrainScan.setText("스캔 중 입니다...");
+				timeCnt = 0;
 			break;
 		}	
 	}
@@ -102,8 +103,6 @@ public class ScanActivity extends Fragment implements OnClickListener {
 							cMed.setTitle(Integer.toString(bWave.getMed()) + "%");
 							cMed.setProgress(bWave.getMed());
 							
-							System.out.println("Debug : " + bWave.getSig() + " / " + timeCnt + " / " + sensingTime);
-							
 							if(bWave.getSig() == 0){
 								totalAtt += bWave.getAtt();
 								totalMed += bWave.getMed();
@@ -116,7 +115,7 @@ public class ScanActivity extends Fragment implements OnClickListener {
 							if(timeCnt == sensingTime){
 								if( ((totalAtt/sensingTime) > 80) && ((totalMed/sensingTime) > 80) ){
 									onSendCmdArduino("s");
-									
+									System.out.println(totalAtt + " / " + totalMed);
 								} else if ( ((totalAtt/sensingTime) > 80) && ((totalMed/sensingTime) < 50) ){
 									onSendCmdArduino("t");
 									
@@ -141,7 +140,7 @@ public class ScanActivity extends Fragment implements OnClickListener {
 					}
 				});
 				try{
-					Thread.sleep(1000);
+					Thread.sleep(900);
 				} catch(InterruptedException e){;}
 			}
 		}
