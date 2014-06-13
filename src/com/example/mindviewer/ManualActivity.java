@@ -20,31 +20,34 @@ public class ManualActivity extends Fragment implements OnClickListener, RadioGr
 	Context mContext;
 	BlueSmirfSPP mSPP;
 	Brainwaves bWave;
-	
+
 	String cmd;
 	Button startCare;
 	Button musicStop;
+
 	private MediaPlayer background;
-	
+
+
 	public ManualActivity(Context context, BlueSmirfSPP mSPP) {
 		mContext 	= context;
 		bWave 		= Brainwaves.getInstance();
 		this.mSPP 	= mSPP;
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, 
 			ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.activity_manual, null);
 		startCare = (Button) view.findViewById(R.id.startCare);
 		startCare.setOnClickListener(this);
-		
+
 		musicStop = (Button) view.findViewById(R.id.musicStop);
 		musicStop.setOnClickListener(this);
-		
+		musicStop.setVisibility(Button.GONE);
+
 		RadioGroup feelingLists = (RadioGroup) view.findViewById(R.id.feelingList);
 		feelingLists.setOnCheckedChangeListener(this);
-				
+
     	return view;
 	}
 
@@ -69,32 +72,34 @@ public class ManualActivity extends Fragment implements OnClickListener, RadioGr
 		break;
 		}
 	}
-	
+
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch(v.getId()){
 
-		case R.id.startCare:
-			onSendCmdArduino(v, cmd);
-			Toast.makeText(getActivity(), "시작합니다. 이제 안정을 취하세요.",
-					Toast.LENGTH_SHORT).show();
-			
-				background = MediaPlayer.create(super.getActivity(),
-						R.raw.background);
+		case R.id.startCare :
+				bWave.setScanState(false);
+				onSendCmdArduino(v, cmd);
+				Toast.makeText(getActivity(), "시작합니다. 이제 안정을 취하세요.", Toast.LENGTH_SHORT).show();
 
+				if(background!=null)
+					background.stop();	// 중복재생 방지 //
+
+				background = MediaPlayer.create(super.getActivity(),R.raw.background);
+				// 노래 파일만 넣으면댐
 				background.start();
-			
-			break;
-
+				background.setLooping(true);
+				musicStop.setVisibility(Button.VISIBLE);
+				break;
 		case R.id.musicStop:
 			background.stop();
 			break;
 		}
 	}
-	
+
 	public void onSendCmdArduino(View view, String cmd){
 		String message = cmd;
-		
+
 		if(mSPP.isConnected()){
 			byte[] send = message.getBytes();
 			mSPP.write(send, 0, send.length);
@@ -102,7 +107,7 @@ public class ManualActivity extends Fragment implements OnClickListener, RadioGr
 			Toast.makeText(getActivity(), "아두이노가 연결이 되어있지 않습니다.", Toast.LENGTH_SHORT).show();
 		}
 	}
-	
+
 	@SuppressLint("NewApi")
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
