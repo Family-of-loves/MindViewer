@@ -101,6 +101,14 @@
                 android:textSize="13sp"
                 android:text="음악끄기"
                 android:textColor="#FFFF" />
+            <Button
+                android:id="@+id/musicRestart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_green_bg"
+                android:textSize="13sp"
+                android:text="음악다시듣기"
+                android:textColor="#FFFF" />
         </LinearLayout>
     </LinearLayout>
 

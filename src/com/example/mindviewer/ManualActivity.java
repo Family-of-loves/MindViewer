@@ -24,7 +24,7 @@ public class ManualActivity extends Fragment implements OnClickListener, RadioGr
 	String cmd;
 	Button startCare;
 	Button musicStop;
-
+	Button musicRestart;
 	private MediaPlayer background;
 
 
@@ -45,6 +45,10 @@ public class ManualActivity extends Fragment implements OnClickListener, RadioGr
 		musicStop.setOnClickListener(this);
 		musicStop.setVisibility(Button.GONE);
 
+		musicRestart = (Button) view.findViewById(R.id.musicRestart);
+		musicRestart.setOnClickListener(this);
+		musicRestart.setVisibility(Button.GONE);
+		
 		RadioGroup feelingLists = (RadioGroup) view.findViewById(R.id.feelingList);
 		feelingLists.setOnCheckedChangeListener(this);
 
@@ -92,8 +96,18 @@ public class ManualActivity extends Fragment implements OnClickListener, RadioGr
 				musicStop.setVisibility(Button.VISIBLE);
 				break;
 		case R.id.musicStop:
-			background.stop();
+			background.pause();
+			musicStop.setVisibility(Button.GONE);
+			musicRestart.setVisibility(Button.VISIBLE);
 			break;
+			
+		case R.id.musicRestart:
+			
+			background.start();
+			background.setLooping(true);
+			musicStop.setVisibility(Button.VISIBLE);
+			musicRestart.setVisibility(Button.GONE);
+			break;	
 		}
 	}
 

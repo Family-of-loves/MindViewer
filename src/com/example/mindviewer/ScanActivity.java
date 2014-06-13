@@ -5,6 +5,7 @@ import com.example.mindviewer.Widget.CircularProgressBar;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,11 +18,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 @SuppressLint("ValidFragment")
-public class ScanActivity extends Fragment  {
+public class ScanActivity extends Fragment  implements OnClickListener{
 	Context mContext;
 
 	Button btn_startBrainScan;
@@ -32,7 +34,11 @@ public class ScanActivity extends Fragment  {
 	ProgressBar bar;
 	ToggleButton start;
 	LinearLayout resultDisp;
-
+	TextView feelResult;
+	Button musicStop;
+	Button musicRestart;
+	private MediaPlayer background;
+	
 	private volatile Thread theProgressBarThread1;
 	public int CurrentPosition;
 
@@ -42,6 +48,8 @@ public class ScanActivity extends Fragment  {
 	int totalAtt;
 	int totalMed;
 
+	//PrintThread thread;
+	
 	//LinearLayout linearChart;
 
 	public ScanActivity(Context context, BlueSmirfSPP mSPP) {
@@ -55,39 +63,32 @@ public class ScanActivity extends Fragment  {
 			ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.activity_scan, null);
 
+		feelResult = (TextView)view.findViewById(R.id.feelResult);
+		
 		bar = (ProgressBar) view.findViewById(R.id.progressBar1);
 		bar.setVisibility(ProgressBar.GONE);
 		resultDisp = (LinearLayout) view.findViewById(R.id.resultDisp);
 		resultDisp.setVisibility(LinearLayout.GONE);
 		
 		start = (ToggleButton) view.findViewById(R.id.brainstart);
-		start.setOnClickListener(new OnClickListener() {
+		start.setOnClickListener(this);
 
-			@Override
-			public void onClick(View v) {
-				if (((ToggleButton) v).isChecked()) {
-					bar.setVisibility(ProgressBar.VISIBLE);
-					bWave.setScanState(true);
-					startProgressBarThread();
-					PrintThread thread = new PrintThread();
-					thread.setDaemon(true);
-					thread.start();		
-				} else {
-					bar.setVisibility(ProgressBar.GONE);
-					bWave.setScanState(false);
-					stopProgressBarThread();
-				}
-
-			}
-		});
-
-		//
+		musicStop = (Button) view.findViewById(R.id.musicStop);
+		musicStop.setOnClickListener(this);
+		musicStop.setVisibility(Button.GONE);
+		
+		musicRestart = (Button) view.findViewById(R.id.musicRestart);
+		musicRestart.setOnClickListener(this);
+		musicRestart.setVisibility(Button.GONE);
+			
 
 		cAtt = (CircularProgressBar) view.findViewById(R.id.circle_attention);
 		cAtt.setSubTitle("Attention");
 		cMed = (CircularProgressBar) view.findViewById(R.id.circle_meditation);
 		cMed.setSubTitle("Meditation");
 
+		
+		
 		return view;
 	}
 
@@ -118,16 +119,44 @@ public class ScanActivity extends Fragment  {
 	    super.onSaveInstanceState(outState);
 	    setUserVisibleHint(true);
 	}
-
+	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()){
 			case R.id.brainstart :
-				bWave.setScanState(true);
-				timeCnt = 0;
-				totalAtt = 0;
-				totalMed = 0;
+				if (((ToggleButton) v).isChecked()) {
+					bar.setVisibility(ProgressBar.VISIBLE);
+					resultDisp.setVisibility(LinearLayout.INVISIBLE);
+					feelResult.setText("");
+					timeCnt = 0;
+					totalAtt = 0;
+					totalMed = 0;
+					bWave.setScanState(true);
+					startProgressBarThread();
+					
+					//thread = new PrintThread();
+					//thread.setDaemon(true);
+					//thread.start();		
+				} else {
+					bar.setVisibility(ProgressBar.GONE);
+					bWave.setScanState(false);
+					stopProgressBarThread();
+				}
 			break;
+			
+			case R.id.musicStop:
+				background.pause();
+				musicStop.setVisibility(Button.GONE);
+				musicRestart.setVisibility(Button.VISIBLE);
+				break;
+				
+			case R.id.musicRestart:
+				
+				background.start();
+				background.setLooping(true);
+				musicStop.setVisibility(Button.VISIBLE);
+				musicRestart.setVisibility(Button.GONE);
+				break;	
 		}	
 	}
 
@@ -142,7 +171,7 @@ public class ScanActivity extends Fragment  {
 		}
 	}
 
-
+	Handler mHandler = new Handler();
 	private Runnable backgroundThread1 = new Runnable() {
 		@Override
 		public void run() {
@@ -152,10 +181,85 @@ public class ScanActivity extends Fragment  {
 				final int total = 100;
 				while (CurrentPosition < total) {
 					try {
-						progressBarHandle.sendMessage(progressBarHandle.obtainMessage());
-						long time= (long)(total / sensingTime)*100;
-						Thread.sleep(time);
 						
+						while(true){
+							mHandler.post(new Runnable(){
+																		
+								public void run() {
+									// TODO Auto-generated method stub
+									if(bWave.getScanState()){
+										cAtt.setTitle(Integer.toString(bWave.getAtt()) + "%");
+										cAtt.setProgress(bWave.getAtt());
+										cMed.setTitle(Integer.toString(bWave.getMed()) + "%");
+										cMed.setProgress(bWave.getMed());
+
+										if(bWave.getSig() == 0){
+											totalAtt += bWave.getAtt();
+											totalMed += bWave.getMed();
+											timeCnt ++;
+
+										}
+										/*
+										 * PlayList 를 생성하고 노래가 동시에 틀어져야함.
+										 */
+										System.out.println("mDebug  : " + timeCnt);
+										if(timeCnt == sensingTime){
+
+											System.out.println(totalAtt + " / " + totalMed);
+											System.out.println(totalAtt/sensingTime + " / " + totalMed/sensingTime);
+											if( ((totalAtt/sensingTime) > 80) && ((totalMed/sensingTime) > 80) ){
+												onSendCmdArduino("s");
+												feelResult.setText("스트레스가 많이 쌓였어요");
+												
+											} else if ( ((totalAtt/sensingTime) > 80) && ((totalMed/sensingTime) < 50) ){
+												onSendCmdArduino("t");
+												feelResult.setText("너무 긴장되요");
+												
+											} else if ( ((totalAtt/sensingTime) < 30) && ((totalMed/sensingTime) > 80) ){
+												onSendCmdArduino("a");
+												feelResult.setText("집중이 되지 않아요");
+												
+											} else if ( ((totalAtt/sensingTime) < 50) && ((totalMed/sensingTime) < 70) ){
+												onSendCmdArduino("g");
+												feelResult.setText("우울하고 아무것도 하고싶지 않아요");
+												if(background!=null)
+													background.stop();	// 중복재생 방지 //
+
+												background = MediaPlayer.create(getActivity(),R.raw.background);
+												// 노래 파일만 넣으면댐
+												background.start();
+												background.setLooping(true);
+												musicStop.setVisibility(Button.VISIBLE);
+												musicRestart.setVisibility(Button.GONE);
+												
+											} else if ( ((totalAtt/sensingTime) < 30) && ((totalMed/sensingTime) < 50) ){
+												onSendCmdArduino("w");
+												feelResult.setText("심신이 많이 허약해졌어요");
+												
+											} else {
+												Toast.makeText(getActivity(), "기분을 알 수 없어요. 다시 측정할게요!", Toast.LENGTH_SHORT).show();
+												
+											}
+											timeCnt = 0;
+											totalAtt = 0;
+											totalMed = 0;
+											bWave.setScanState(false);
+											
+											
+											//thread.interrupt();
+											
+											
+										}
+									} 
+								}
+							});
+							
+						
+						
+						progressBarHandle.sendMessage(progressBarHandle.obtainMessage());
+						//long time= (long)(total / sensingTime)*100;
+						Thread.sleep(1000);
+						}
 					} catch (final InterruptedException e) {
 						return;
 					} catch (final Exception e) {
@@ -169,9 +273,12 @@ public class ScanActivity extends Fragment  {
 		Handler progressBarHandle = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
-				CurrentPosition++;
+				CurrentPosition=CurrentPosition+3;
 				bar.setProgress(CurrentPosition);
 				start.setText("측정 중 입니다. (" + CurrentPosition + "%)");
+				
+				
+				
 				if(CurrentPosition > 20){
 					start.setText("조금만 더 측정 해 볼게요. (" + CurrentPosition + "%)");
 				}
@@ -181,11 +288,12 @@ public class ScanActivity extends Fragment  {
 				if (CurrentPosition > 80){
 					start.setText("다 끝나가요. 조금만 참아주세요! (" + CurrentPosition + "%)");
 				}
-				if (CurrentPosition == 100) {
+				if (CurrentPosition > 100) {
 					stopProgressBarThread();
 					start.setTextOn("다시 측정하기");
 					resultDisp.setVisibility(LinearLayout.VISIBLE);
 				}
+				
 
 			}
 		};
@@ -193,64 +301,4 @@ public class ScanActivity extends Fragment  {
 	};
 
 
-	Handler mHandler = new Handler();
-
-	class PrintThread extends Thread{
-		public void run(){
-			while(true){
-				mHandler.post(new Runnable(){
-					public void run() {
-						// TODO Auto-generated method stub
-						if(bWave.getScanState()){
-							cAtt.setTitle(Integer.toString(bWave.getAtt()) + "%");
-							cAtt.setProgress(bWave.getAtt());
-							cMed.setTitle(Integer.toString(bWave.getMed()) + "%");
-							cMed.setProgress(bWave.getMed());
-
-							if(bWave.getSig() == 0){
-								totalAtt += bWave.getAtt();
-								totalMed += bWave.getMed();
-								timeCnt ++;
-
-							}
-							/*
-							 * PlayList 를 생성하고 노래가 동시에 틀어져야함.
-							 */
-							System.out.println("mDebug  : " + timeCnt);
-							if(timeCnt == sensingTime){
-
-								System.out.println(totalAtt + " / " + totalMed);
-								
-								if( ((totalAtt/sensingTime) > 80) && ((totalMed/sensingTime) > 80) ){
-									onSendCmdArduino("s");
-								} else if ( ((totalAtt/sensingTime) > 80) && ((totalMed/sensingTime) < 50) ){
-									onSendCmdArduino("t");
-
-								} else if ( ((totalAtt/sensingTime) < 30) && ((totalMed/sensingTime) > 80) ){
-									onSendCmdArduino("a");
-
-								} else if ( ((totalAtt/sensingTime) < 50) && ((totalMed/sensingTime) < 50) ){
-									onSendCmdArduino("g");
-
-								} else if ( ((totalAtt/sensingTime) < 30) && ((totalMed/sensingTime) < 50) ){
-									onSendCmdArduino("w");
-
-								} else {
-									Toast.makeText(getActivity(), "기분을 알 수 없어요. 다시 측정할게요!", Toast.LENGTH_SHORT).show();
-									timeCnt = 0;
-									totalAtt = 0;
-									totalMed = 0;
-									bWave.setScanState(false);
-
-								}
-							}
-						} 
-					}
-				});
-				try{
-					Thread.sleep(900);
-				} catch(InterruptedException e){;}
-			}
-		}
-	}
 }
