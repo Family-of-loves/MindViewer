@@ -107,6 +107,7 @@ public class ManualActivity extends Fragment implements OnClickListener, RadioGr
 				background.start();
 				background.setLooping(true);
 				musicStop.setVisibility(Button.VISIBLE);
+				musicRestart.setVisibility(Button.GONE);
 				break;
 		case R.id.musicStop:
 			background.pause();
