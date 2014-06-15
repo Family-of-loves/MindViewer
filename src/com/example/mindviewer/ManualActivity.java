@@ -85,15 +85,29 @@ public class ManualActivity extends Fragment implements OnClickListener, RadioGr
 				bWave.setScanState(false);
 				onSendCmdArduino(v, cmd);
 				Toast.makeText(getActivity(), "시작합니다. 이제 안정을 취하세요.", Toast.LENGTH_SHORT).show();
-
+								
 				if(background!=null)
 					background.stop();	// 중복재생 방지 //
-
-				background = MediaPlayer.create(super.getActivity(),R.raw.background);
+				
+				if(cmd.equals("s") ){
+					background = MediaPlayer.create(super.getActivity(),R.raw.stress);
+				}else if(cmd.equals("g")){
+					background = MediaPlayer.create(super.getActivity(),R.raw.gloomy);
+				}else if(cmd.equals("t")){
+					background = MediaPlayer.create(super.getActivity(),R.raw.hightention);
+				}else if(cmd.equals("a")){
+					background = MediaPlayer.create(super.getActivity(),R.raw.needattention);
+				}else if(cmd.equals("w")){
+					background = MediaPlayer.create(super.getActivity(),R.raw.weaklyphysics);
+				}
+				
+				
+				
 				// 노래 파일만 넣으면댐
 				background.start();
 				background.setLooping(true);
 				musicStop.setVisibility(Button.VISIBLE);
+				musicRestart.setVisibility(Button.GONE); ///
 				break;
 		case R.id.musicStop:
 			background.pause();
