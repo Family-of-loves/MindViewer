@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -23,15 +24,16 @@ public class ManualActivity extends Fragment implements OnClickListener, RadioGr
 
 	String cmd;
 	Button startCare;
-	Button musicStop;
-	Button musicRestart;
-	private MediaPlayer background;
+	static Button musicStop;
+	static Button musicRestart;
+	
 
 
-	public ManualActivity(Context context, BlueSmirfSPP mSPP) {
+	public ManualActivity(Context context, BlueSmirfSPP mSPP ) {
 		mContext 	= context;
 		bWave 		= Brainwaves.getInstance();
 		this.mSPP 	= mSPP;
+		
 	}
 
 	@Override
@@ -85,40 +87,45 @@ public class ManualActivity extends Fragment implements OnClickListener, RadioGr
 				bWave.setScanState(false);
 				onSendCmdArduino(v, cmd);
 				Toast.makeText(getActivity(), "시작합니다. 이제 안정을 취하세요.", Toast.LENGTH_SHORT).show();
-								
-				if(background!=null)
-					background.stop();	// 중복재생 방지 //
+				
+				ScanActivity.resultDisp.setVisibility(LinearLayout.INVISIBLE);
+				ScanActivity.musicRestart.setVisibility(Button.GONE);
+				ScanActivity.musicStop.setVisibility(Button.GONE);
+				
+				
+				if(MainActivity.background!=null)
+					MainActivity.background.stop();	// 중복재생 방지 //
 				
 				if(cmd.equals("s") ){
-					background = MediaPlayer.create(super.getActivity(),R.raw.stress);
+					MainActivity.background = MediaPlayer.create(super.getActivity(),R.raw.stress);
 				}else if(cmd.equals("g")){
-					background = MediaPlayer.create(super.getActivity(),R.raw.gloomy);
+					MainActivity.background = MediaPlayer.create(super.getActivity(),R.raw.gloomy);
 				}else if(cmd.equals("t")){
-					background = MediaPlayer.create(super.getActivity(),R.raw.hightention);
+					MainActivity.background = MediaPlayer.create(super.getActivity(),R.raw.hightention);
 				}else if(cmd.equals("a")){
-					background = MediaPlayer.create(super.getActivity(),R.raw.needattention);
+					MainActivity.background = MediaPlayer.create(super.getActivity(),R.raw.needattention);
 				}else if(cmd.equals("w")){
-					background = MediaPlayer.create(super.getActivity(),R.raw.weaklyphysics);
+					MainActivity.background = MediaPlayer.create(super.getActivity(),R.raw.weaklyphysics);
 				}
 				
 				
 				
 				// 노래 파일만 넣으면댐
-				background.start();
-				background.setLooping(true);
+				MainActivity.background.start();
+				MainActivity.background.setLooping(true);
 				musicStop.setVisibility(Button.VISIBLE);
 				musicRestart.setVisibility(Button.GONE); ///
 				break;
 		case R.id.musicStop:
-			background.pause();
+			MainActivity.background.pause();
 			musicStop.setVisibility(Button.GONE);
 			musicRestart.setVisibility(Button.VISIBLE);
 			break;
 			
 		case R.id.musicRestart:
 			
-			background.start();
-			background.setLooping(true);
+			MainActivity.background.start();
+			MainActivity.background.setLooping(true);
 			musicStop.setVisibility(Button.VISIBLE);
 			musicRestart.setVisibility(Button.GONE);
 			break;	
