@@ -33,11 +33,11 @@ public class ScanActivity extends Fragment  implements OnClickListener{
 	CircularProgressBar cMed;
 	ProgressBar bar;
 	ToggleButton start;
-	LinearLayout resultDisp;
+	static LinearLayout resultDisp;
 	TextView feelResult;
-	Button musicStop;
-	Button musicRestart;
-	private MediaPlayer background;
+	static Button musicStop;
+	static Button musicRestart;
+	
 	
 	private volatile Thread theProgressBarThread1;
 	public int CurrentPosition;
@@ -56,6 +56,7 @@ public class ScanActivity extends Fragment  implements OnClickListener{
 		this.mContext 				= context;
 		bWave 						= Brainwaves.getInstance();
 		this.mSPP 				   	= mSPP;
+		
 	}
 
 	@Override
@@ -128,6 +129,15 @@ public class ScanActivity extends Fragment  implements OnClickListener{
 					bar.setVisibility(ProgressBar.VISIBLE);
 					resultDisp.setVisibility(LinearLayout.INVISIBLE);
 					musicRestart.setVisibility(Button.GONE);
+					musicStop.setVisibility(Button.GONE);
+					
+					ManualActivity.musicStop.setVisibility(Button.GONE);
+					ManualActivity.musicRestart.setVisibility(Button.GONE); ///
+					
+					
+					if(MainActivity.background!=null)
+						MainActivity.background.stop();
+					
 					feelResult.setText("");
 					timeCnt = 0;
 					totalAtt = 0;
@@ -146,15 +156,15 @@ public class ScanActivity extends Fragment  implements OnClickListener{
 			break;
 			
 			case R.id.musicStop:
-				background.pause();
+				MainActivity.background.pause();
 				musicStop.setVisibility(Button.GONE);
 				musicRestart.setVisibility(Button.VISIBLE);
 				break;
 				
 			case R.id.musicRestart:
 				
-				background.start();
-				background.setLooping(true);
+				MainActivity.background.start();
+				MainActivity.background.setLooping(true);
 				musicStop.setVisibility(Button.VISIBLE);
 				musicRestart.setVisibility(Button.GONE);
 				break;	
@@ -206,8 +216,8 @@ public class ScanActivity extends Fragment  implements OnClickListener{
 										System.out.println("mDebug  : " + timeCnt);
 										if(timeCnt == sensingTime){
 
-											if(background!=null)
-												background.stop();	// 중복재생 방지 //
+											if(MainActivity.background!=null)
+												MainActivity.background.stop();	// 중복재생 방지 //
 											
 											System.out.println(totalAtt + " / " + totalMed);
 											System.out.println(totalAtt/sensingTime + " / " + totalMed/sensingTime);
@@ -215,39 +225,36 @@ public class ScanActivity extends Fragment  implements OnClickListener{
 													((totalMed/sensingTime) >= 40) && ((totalMed/sensingTime) < 90) ){
 												onSendCmdArduino("s");
 												feelResult.setText("스트레스가 많이 쌓였어요");
-												background = MediaPlayer.create(getActivity(),R.raw.stress);
+												MainActivity.background = MediaPlayer.create(getActivity(),R.raw.stress);
 												
 											} else if ( ((totalAtt/sensingTime) >= 40) && ((totalAtt/sensingTime) < 90)&&
-													((totalMed/sensingTime) >= 1) && ((totalMed/sensingTime) < 40) ){
+													((totalMed/sensingTime) >= 0) && ((totalMed/sensingTime) < 40) ){
 												onSendCmdArduino("t");
 												feelResult.setText("너무 긴장되요");
-												background = MediaPlayer.create(getActivity(),R.raw.hightention);
+												MainActivity.background = MediaPlayer.create(getActivity(),R.raw.hightention);
 												
-											} else if ( ((totalAtt/sensingTime) >= 1) && ((totalAtt/sensingTime) < 40)&&
+											} else if ( ((totalAtt/sensingTime) >= 0) && ((totalAtt/sensingTime) < 40)&&
 													((totalMed/sensingTime) >= 40) && ((totalMed/sensingTime) < 90) ){
 												onSendCmdArduino("a");
 												feelResult.setText("집중이 되지 않아요");
-												background = MediaPlayer.create(getActivity(),R.raw.needattention);
+												MainActivity.background = MediaPlayer.create(getActivity(),R.raw.needattention);
 												
 											} else if ( ((totalAtt/sensingTime) >= 40) && ((totalAtt/sensingTime) < 60)&&
 													((totalMed/sensingTime) >= 40) && ((totalMed/sensingTime) < 90) ){
 												onSendCmdArduino("g");
 												feelResult.setText("우울하고 아무것도 하고싶지 않아요");
-												background = MediaPlayer.create(getActivity(),R.raw.gloomy);
+												MainActivity.background = MediaPlayer.create(getActivity(),R.raw.gloomy);
 																							
-											} else if ( ((totalAtt/sensingTime) >= 1) && ((totalAtt/sensingTime) < 40)&&
-													((totalMed/sensingTime) >= 1) && ((totalMed/sensingTime) < 40) ){
+											} else if ( ((totalAtt/sensingTime) >= 0) && ((totalAtt/sensingTime) < 40)&&
+													((totalMed/sensingTime) >= 0) && ((totalMed/sensingTime) < 40) ){
 												onSendCmdArduino("w");
 												feelResult.setText("심신이 많이 허약해졌어요");
-												background = MediaPlayer.create(getActivity(),R.raw.weaklyphysics);
-												
-											} else {
-												Toast.makeText(getActivity(), "기분을 알 수 없어요. 다시 측정할게요!", Toast.LENGTH_SHORT).show();
+												MainActivity.background = MediaPlayer.create(getActivity(),R.raw.weaklyphysics);
 												
 											}
 											
-											background.start();
-											background.setLooping(true);
+											MainActivity.background.start();
+											MainActivity.background.setLooping(true);
 											musicStop.setVisibility(Button.VISIBLE);
 											musicRestart.setVisibility(Button.GONE);
 											

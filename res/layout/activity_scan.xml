@@ -61,20 +61,40 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical" >
-	
-	        
-	        <ProgressBar android:id="@+id/progressBar1" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="wrap_content" /><ToggleButton
-	            android:id="@+id/brainstart"
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:background="@drawable/btn_green_bg"
-	            android:textColor="#FFFF"
-	            android:textOff="이곳을 눌러 측정해보세요!"
-	            android:textSize="13sp" />
 
-	        
+            <ProgressBar
+                android:id="@+id/progressBar1"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
+            <ToggleButton
+                android:id="@+id/brainstart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_green_bg"
+                android:textColor="#FFFF"
+                android:textOff="이곳을 눌러 측정해보세요!"
+                android:textSize="13sp" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/musicStop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_green_bg"
+            android:text="음악끄기"
+            android:textColor="#FFFF"
+            android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/musicRestart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_green_bg"
+            android:text="음악다시듣기"
+            android:textColor="#FFFF"
+            android:textSize="13sp" />
 
         <LinearLayout
             android:id="@+id/resultDisp"
@@ -98,25 +118,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_weight="1" />
-	        
         </LinearLayout>
-        <Button
-                android:id="@+id/musicStop"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/btn_green_bg"
-                android:textSize="13sp"
-                android:text="음악끄기"
-                android:textColor="#FFFF" />
-        <Button
-                android:id="@+id/musicRestart"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/btn_green_bg"
-                android:textSize="13sp"
-                android:text="음악다시듣기"
-                android:textColor="#FFFF" />
-       
     </LinearLayout>
 
 </ScrollView>
