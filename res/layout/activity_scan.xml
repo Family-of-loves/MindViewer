@@ -110,7 +110,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="당신의 기분은.." />
+                android:text="당신의 기분은.." 
+                android:textSize="26sp"/>
 
             <TextView
                 android:id="@+id/feelResult"
